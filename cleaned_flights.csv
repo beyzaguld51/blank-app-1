@@ -64,8 +64,8 @@ flight_id,date,from,to,distance_miles
 63,2024-01-22,New Jersey (TEB),Florida (PBI),1000
 64,2024-01-24,Florida (PBI),New Jersey (TEB),1000
 65,2024-01-24,New Jersey (TEB),Florida (PBI),1000
-66,2024-02-02,Florida (PBI),Orlendo (ISM),140
-67,2024-02-05,Orlendo (ISM),Florida (PBI),140
+66,2024-02-02,Florida (PBI),Orlando (ISM),140
+67,2024-02-05,Orlando (ISM),Florida (PBI),140
 68,2024-02-07,Florida (PBI),New Jersey (TEB),1040
 69,2024-02-10,New Jersey (TEB),Florida (PBI),1000
 70,2024-02-15,Florida (PBI),New Jersey (TEB),1000
@@ -76,70 +76,69 @@ flight_id,date,from,to,distance_miles
 75,2024-01-19,Bahamas (NAS),Florida (PBI),200
 76,2024-03-05,Florida (PBI),Sint Maarten (SXM),1200
 77,2024-03-08,Sint Maarten (SXM),Florida (PBI),1200
-78,2024-03-17, Florida (PBI), Kingstown (SVD), 1500
-79,2024-03-14, New Jersey (TEB), Florida (PBI), 1000
-80,2024-03-14, Florida (PBI), New Jersey (TEB), 1000
-81,2024-03-10, Texas (AUS), Florida (PBI), 1100
-82,2024-03-09, Florida (PBI), Texas (AUS), 1100
-83,2024-03-08, Philipsburg (SXM), Florida (PBI), 1200
-84,2024-03-05, Florida (PBI), Philipsburg (SXM), 1200
-85,2024-02-19, Bahamas (NAS), Florida (PBI), 200
-86, 2024-02-19, Florida (PBI), Bahamas(NAS), 200
-87, 2024-02-16, Bahamas (NAS), Florida (PBI), 200
-89, 2024-02-26, Florida (PBI), Bahamas (NAS), 200
-90, 2024-02-16, New Jersey (TEB), Florida (PBI), 1000
-91, 2024-02-15, Florida (PBI), New Jersey (TEB), 1000
-92, 2024-02-10, New Jersey (TEB), Florida (PBI), 1000
-93, 2024-02-07, Florida (PBI), New Jersey (TEB), 1040
-94, 2024-02-05, Orlando (ISM), Florida (PBI), 140
-95, 2024-02-02, Florida (PBI), Orlando (ISM), 140
-96, 2024-01-24, New Jersey (TEB), Florida (PBI), 1000
-97, 2024-01-24, Florida (PBI), New Jersey (TEB), 1000
-98, 2024-01-22, New Jersey (TEB), Florida (PBI), 1000
-99, 2024-01-22, Florida (PBI), New Jersey (TEB), 1000
-100, 2024-01-21, California (LAX), Florida (PBI), 2300
-101, 2024-01-18, Seatlle, (BFI), California (LAX), 960
-102, 2024-01-18, California (LAX), Seattle (BFI), 960
-103, 2024-01-17, Florida (PBI), California (LAX), 2300
-104, 2024-01-15, Bahamas (NAS), Florida (PBI), 200
-105, 2024-01-15, Florida (PBI), Bahamas (NAS), 200
-106, 2024-01-12, Bahamas (NAS), Florida (PBI), 200
-107, 2024-01-12, Florida (PBI), Bahamas (NAS), 200
-108, 2024-01-11, Atlanta (ATL), Florida (PBI), 550
-109, 2024-01-07, Florida (PBI), Atlanta (ATL), 560
-110, 2024-01-06, New York (HPN), Flroida (PBI), 1111
-111, 2024-01-01, Florida (PBI), New York (HPN), 1100
-112, 2023-12-29, New Jersey (TEB), Florida (PBI), 986
-113, 2023-12-28, Florida (PBI), New Jersey (TEB), 1100
-114, 2023-12-13, New Jersey (TEB), Florida (PBI), 1000
-115, 2023-12-10, Florida (PBI), New Jersey (TEB), 1000
-116, 2023-11-26, Philipsburg (SXM), Florida (PBI), 1200
-117, 2023-11-21, Florida (PBI), Philipsburg (SXM), 1200
-118, 2023-11-19, Las Vegas (LAS), Florida (PBI), 2200
-119, 2023-11-17, Florida (PBI), Las Vegas (LAS), 2132
-120, 2023-11-16, California (VNY), Florida (PBI), 2400
-121, 2023-11-01, Florida (PBI), California (VNY), 2401
-122, 2023-11-01, New Jersey (TEB), Florida (PBI), 1000
-123, 2023-10-22, Texas (AUS), New Jersey (TEB), 1500
-124, 2023-10-21, Florida (PBI), Texas (AUS), 1000
-125, 2023-10-19, New Jersey (TEB), Florida (PBI), 1100
-126, 2023-10-17, Florida (PBI), New Jersey (TEB), 1000
-127, 2023-10-01, Las Vegas (LAS), Florida (PBI), 100
-128, 2023-10-01, Montana (MSO), Las Vegas (LAS), 710
-129, 2023-10-01, Oregon (HIO), Montana (MSO)
-130, 2023-09-29, Nice (NCE), Paris (LBG), 450
-131, 2023-09-26, Florida (PBI), New Jersey (ACY), 900
-132, 2023-09-24, Colorado (GJT), Florida (PBI), 1045
-133, 2023-09-21, Florida (PBI), Colorado (GJT), 1900
-134, 2023-09-11, New York (HPN), Florida (PBI), 1100
-135, 2023-09-09, Florida (PBI), New York (HPN), 1000
-136, 2023-09-04, New York (HPN), Florida (PBI), 1026
-137, 2023-09-01, Florida (PBI), New York (HPN), 1016
-138, 2023-08-16, Ireland (IOR), Florida (PBI), 3900
-139, 2023-08-16, Rome (CIA), Ireland (IOR), 1300
-140, 2023-08-13, Saint John's  (YVT), Rome (CIA), 3101
-141, 2023-08-12, Florida (PBI), Saint John's (YVT), 2100
-142, 2023-08-11, California (VNY), Florida (PBI), 2400
-143, 2023-08-09,Florida (PBI),California (VNY),2300
-144, 2023-08-07,Kingstown (NCO),Florida (PBI),1096
+78,2024-03-17,Florida (PBI),Kingstown (SVD),1500
+79,2024-03-14,New Jersey (TEB),Florida (PBI),1000
+80,2024-03-14,Florida (PBI),New Jersey (TEB),1000
+81,2024-03-10,Texas (AUS),Florida (PBI),1100
+82,2024-03-09,Florida (PBI),Texas (AUS),1100
+83,2024-03-08,Philipsburg (SXM),Florida (PBI),1200
+84,2024-03-05,Florida (PBI),Philipsburg (SXM),1200
+85,2024-02-19,Bahamas (NAS),Florida (PBI),200
+86,2024-02-19,Florida (PBI),Bahamas (NAS),200
+87,2024-02-16,Bahamas (NAS),Florida (PBI),200
+89,2024-02-26,Florida (PBI),Bahamas (NAS),200
+90,2024-02-16,New Jersey (TEB),Florida (PBI),1000
+91,2024-02-15,Florida (PBI),New Jersey (TEB),1000
+92,2024-02-10,New Jersey (TEB),Florida (PBI),1000
+93,2024-02-07,Florida (PBI),New Jersey (TEB),1040
+94,2024-02-05,Orlando (ISM),Florida (PBI),140
+95,2024-02-02,Florida (PBI),Orlando (ISM),140
+96,2024-01-24,New Jersey (TEB),Florida (PBI),1000
+97,2024-01-24,Florida (PBI),New Jersey (TEB),1000
+98,2024-01-22,New Jersey (TEB),Florida (PBI),1000
+99,2024-01-22,Florida (PBI),New Jersey (TEB),1000
+100,2024-01-21,California (LAX),Florida (PBI),2300
+101,2024-01-18,Seattle (BFI),California (LAX),960
+102,2024-01-18,California (LAX),Seattle (BFI),960
+103,2024-01-17,Florida (PBI),California (LAX),2300
+104,2024-01-15,Bahamas (NAS),Florida (PBI),200
+105,2024-01-15,Florida (PBI),Bahamas (NAS),200
+106,2024-01-12,Bahamas (NAS),Florida (PBI),200
+107,2024-01-12,Florida (PBI),Bahamas (NAS),200
+108,2024-01-11,Atlanta (ATL),Florida (PBI),550
+109,2024-01-07,Florida (PBI),Atlanta (ATL),560
+110,2024-01-06,New York (HPN),Florida (PBI),1111
+111,2024-01-01,Florida (PBI),New York (HPN),1100
+112,2023-12-29,New Jersey (TEB),Florida (PBI),986
+113,2023-12-28,Florida (PBI),New Jersey (TEB),1100
+114,2023-12-13,New Jersey (TEB),Florida (PBI),1000
+115,2023-12-10,Florida (PBI),New Jersey (TEB),1000
+116,2023-11-26,Philipsburg (SXM),Florida (PBI),1200
+117,2023-11-21,Florida (PBI),Philipsburg (SXM),1200
+118,2023-11-19,Las Vegas (LAS),Florida (PBI),2200
+119,2023-11-17,Florida (PBI),Las Vegas (LAS),2132
+120,2023-11-16,California (VNY),Florida (PBI),2400
+121,2023-11-01,Florida (PBI),California (VNY),2401
+122,2023-11-01,New Jersey (TEB),Florida (PBI),1000
+123,2023-10-22,Texas (AUS),New Jersey (TEB),1500
+124,2023-10-21,Florida (PBI),Texas (AUS),1000
+125,2023-10-19,New Jersey (TEB),Florida (PBI),1100
+126,2023-10-17,Florida (PBI),New Jersey (TEB),1000
+127,2023-10-01,Las Vegas (LAS),Florida (PBI),100
+128,2023-10-01,Montana (MSO),Las Vegas (LAS),710
+130,2023-09-29,Nice (NCE),Paris (LBG),450
+131,2023-09-26,Florida (PBI),New Jersey (ACY),900
+132,2023-09-24,Colorado (GJT),Florida (PBI),1045
+133,2023-09-21,Florida (PBI),Colorado (GJT),1900
+134,2023-09-11,New York (HPN),Florida (PBI),1100
+135,2023-09-09,Florida (PBI),New York (HPN),1000
+136,2023-09-04,New York (HPN),Florida (PBI),1026
+137,2023-09-01,Florida (PBI),New York (HPN),1016
+138,2023-08-16,Ireland (IOR),Florida (PBI),3900
+139,2023-08-16,Rome (CIA),Ireland (IOR),1300
+140,2023-08-13,Saint John's (YVT),Rome (CIA),3101
+141,2023-08-12,Florida (PBI),Saint John's (YVT),2100
+142,2023-08-11,California (VNY),Florida (PBI),2400
+143,2023-08-09,Florida (PBI),California (VNY),2300
+144,2023-08-07,Kingstown (NCO),Florida (PBI),1096
 146,2023-08-05,Florida (PBI),Kingstown (NCO),1200

@@ -1,157 +1,233 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import re
 
-# -----------------------------
-# CSV einlesen
-# -----------------------------
-df = pd.read_csv("tommy_hilfiger_flights.csv")
-df["date"] = pd.to_datetime(df["date"])
+# ----------------------------------------------------
+# STREAMLIT SETUP
+# ----------------------------------------------------
+st.set_page_config(layout="wide")
+st.title("🛩️ Tommy Hilfiger – Flight Tracker")
 
-# Miles -> Kilometer
-df["distance_km"] = df["distance_miles"] * 1.60934
 
-# -----------------------------
-# IATA-Koordinaten (alle Codes aus deiner CSV)
-# -----------------------------
-iata_coords = {
-    "BTL": (42.3073, -85.2515),   # Michigen (Battle Creek)
-    "PBI": (26.6832, -80.0956),   # Florida (Palm Beach)
-    "HVN": (41.2637, -72.8868),   # Connecticut (New Haven)
-    "VNY": (34.2098, -118.4890),  # California (Van Nuys)
-    "AUS": (30.1945, -97.6699),   # Texas (Austin)
-    "SVD": (13.1567, -61.1499),   # Kingstown (St. Vincent)
-    "BOS": (42.3656, -71.0096),   # Boston
-    "VCE": (45.5053, 12.3519),    # Venice
-    "MUC": (48.3538, 11.7861),    # Germany (Munich)
-    "ZRH": (47.4581, 8.5555),     # Switzerland (Zurich)
-    "NCE": (43.6584, 7.2159),     # France (Nice)
-    "LBG": (48.9695, 2.4412),     # Paris Le Bourget
-    "AMS": (52.3105, 4.7683),     # Amsterdam
-    "WAL": (37.9402, -75.4666),   # Virginia (Wallops)
-    "DAL": (32.8471, -96.8518),   # Dallas Love Field
-    "NCO": (41.5971, -71.4121),   # Kingstown (Quonset State)
-    "YYT": (47.6186, -52.7519),   # Canada (St. John's)
-    "CIA": (41.7999, 12.5949),    # Rome Ciampino
-    "IOR": (53.1067, -9.6536),    # Ireland (Inishmore)
-    "HPN": (41.0670, -73.7076),   # New York (Westchester)
-    "GJT": (39.1224, -108.5270),  # Colorado (Grand Junction)
-    "ACY": (39.4576, -74.5772),   # New Jersey (Atlantic City)
-    "HIO": (45.5404, -122.9490),  # Oregon (Hillsboro)
-    "MSO": (46.9163, -114.0906),  # Montana (Missoula)
-    "LAS": (36.0840, -115.1537),  # Las Vegas
-    "TEB": (40.8501, -74.0608),   # New Jersey (Teterboro)
-    "NAS": (25.0390, -77.4662),   # Bahamas (Nassau)
-    "LAX": (33.9416, -118.4085),  # Los Angeles
-    "BFI": (47.5290, -122.3010),  # Seattle Boeing Field
-    "ISM": (28.2898, -81.4371),   # Orlendo (Kissimmee)
-    "SXM": (18.0410, -63.1089),   # Sint Maarten
-    "ATL": (33.6407, -84.4277),   # Atlanta
+# ----------------------------------------------------
+# CSV AUTOMATISCH BEREINIGEN
+# ----------------------------------------------------
+def clean_csv(input_file="tommy_hilfiger_flights.csv", output_file="cleaned_flights.csv"):
+
+    typos = {
+        "Flroida": "Florida",
+        "Orlendo": "Orlando",
+        "Seatlle": "Seattle",
+        "Bahamas(NAS)": "Bahamas (NAS)",
+        "Philipsburg": "Philipsburg",
+    }
+
+    def fix_typos(text):
+        for wrong, right in typos.items():
+            text = text.replace(wrong, right)
+        return text
+
+    cleaned = []
+
+    with open(input_file, "r") as f:
+        for line in f:
+            line = line.strip()
+            line = fix_typos(line)
+
+            line = re.sub(r"\((\w{3})\)", r" (\1)", line)
+            line = re.sub(r",\s*\(", " (", line)
+            line = re.sub(r"\s{2,}", " ", line)
+
+            parts = [p.strip() for p in line.split(",")]
+
+            if len(parts) > 5:
+                parts = [parts[0], parts[1], parts[2], " ".join(parts[3:-1]), parts[-1]]
+
+            if len(parts) == 5:
+                cleaned.append(",".join(parts))
+
+    with open(output_file, "w") as f:
+        f.write("\n".join(cleaned))
+
+    return output_file
+
+
+clean_file = clean_csv()
+df = pd.read_csv(clean_file)
+df["date"] = pd.to_datetime(df["date"], errors="coerce")
+
+
+# ----------------------------------------------------
+# IATA EXTRAHIEREN
+# ----------------------------------------------------
+df["iata_from"] = df["from"].str.extract(r"\((.*?)\)")
+df["iata_to"] = df["to"].str.extract(r"\((.*?)\)")
+
+df["iata_from"] = df["iata_from"].str.replace(",", "")
+df["iata_to"] = df["iata_to"].str.replace(",", "")
+
+
+# ----------------------------------------------------
+# AIRPORT-KOORDINATEN
+# ----------------------------------------------------
+airport_coords = {
+    "BTL": (42.3073, -85.2515), "PBI": (26.6832, -80.0956),
+    "HVN": (41.2637, -72.8868), "VNY": (34.2100, -118.4890),
+    "AUS": (30.1945, -97.6699), "SVD": (13.1567, -61.1499),
+    "BOS": (42.3656, -71.0096), "VCE": (45.5053, 12.3519),
+    "MUC": (48.3538, 11.7861), "ZRH": (47.4581, 8.5555),
+    "NCE": (43.6584, 7.2159), "LBG": (48.9695, 2.4418),
+    "AMS": (52.3105, 4.7683), "WAL": (37.9402, -75.4666),
+    "DAL": (32.8471, -96.8517), "NCO": (41.5972, -71.4121),
+    "YYT": (47.6186, -52.7519), "CIA": (41.7999, 12.5949),
+    "IOR": (53.1067, -9.6536), "HPN": (41.0670, -73.7076),
+    "GJT": (39.1224, -108.5267), "ACY": (39.4576, -74.5772),
+    "HIO": (45.5404, -122.9499), "MSO": (46.9163, -114.0906),
+    "LAS": (36.0801, -115.1522), "TEB": (40.8501, -74.0608),
+    "NAS": (25.0380, -77.4662), "LAX": (33.9416, -118.4085),
+    "BFI": (47.5299, -122.3020), "ATL": (33.6407, -84.4277),
+    "SXM": (18.0410, -63.1089), "YVT": (52.8214, -108.3073),
 }
 
-# -----------------------------
-# IATA-Codes aus dem Text ziehen
-# -----------------------------
-df["iata_from"] = df["from"].str.extract(r"\((.*?)\)")
-df["iata_to"]   = df["to"].str.extract(r"\((.*?)\)")
+df["lat_from"] = df["iata_from"].apply(lambda x: airport_coords.get(x, (None, None))[0])
+df["lon_from"] = df["iata_from"].apply(lambda x: airport_coords.get(x, (None, None))[1])
+df["lat_to"] = df["iata_to"].apply(lambda x: airport_coords.get(x, (None, None))[0])
+df["lon_to"] = df["iata_to"].apply(lambda x: airport_coords.get(x, (None, None))[1])
 
-# Koordinaten zuordnen
-df["lat_from"] = df["iata_from"].map(lambda x: iata_coords.get(x, (None, None))[0])
-df["lon_from"] = df["iata_from"].map(lambda x: iata_coords.get(x, (None, None))[1])
-df["lat_to"]   = df["iata_to"].map(lambda x: iata_coords.get(x, (None, None))[0])
-df["lon_to"]   = df["iata_to"].map(lambda x: iata_coords.get(x, (None, None))[1])
+df = df.dropna(subset=["lat_from", "lat_to"])
 
-# Zeilen ohne Koordinaten entfernen (falls es doch mal einen unbekannten Code gibt)
-df = df.dropna(subset=["lat_from", "lon_from", "lat_to", "lon_to"])
 
-# -----------------------------
-# Doppelte Routen erkennen und Linien dicker machen
-# -----------------------------
-route_counts = df.groupby(["from", "to"]).size().reset_index(name="count")
-df = df.merge(route_counts, on=["from", "to"], how="left")
-df["line_width"] = df["count"].apply(lambda x: 2 + (x - 1) * 2)
+# ----------------------------------------------------
+# DISTANZEN
+# ----------------------------------------------------
+df["distance_km"] = df["distance_miles"] * 1.60934
 
-# -----------------------------
-# Statistik
-# -----------------------------
+
+# ----------------------------------------------------
+# DUPLIKATE ZÄHLEN
+# ----------------------------------------------------
+route_counts = df.groupby(["iata_from", "iata_to"]).size().reset_index(name="count")
+df = df.merge(route_counts, on=["iata_from", "iata_to"], how="left")
+
+
+# ----------------------------------------------------
+# NEUES FARBSYSTEM
+# ----------------------------------------------------
+def get_color(count):
+    if count >= 5:
+        return "green"     # 5+
+    elif count == 4:
+        return "yellow"
+    elif count == 3:
+        return "purple"
+    elif count == 2:
+        return "blue"
+    else:
+        return "red"       # 1
+
+df["color"] = df["count"].apply(get_color)
+df["line_width"] = 3
+
+
+# ----------------------------------------------------
+# GESAMTSTATISTIK & INGOLSTADT VERGLEICH
+# ----------------------------------------------------
 total_distance = df["distance_km"].sum()
-total_emission = total_distance * 2.5 / 1000  # Tonnen CO₂
-avg_distance   = df["distance_km"].mean()
+total_emission = total_distance * 2.5 / 1000  # t CO₂
 
-pfaffenhofen_emission = 5000  # t CO₂/Jahr (angenommener Wert für Vergleich)
-pfaffenhofen_percent = total_emission / pfaffenhofen_emission * 100
+# Ingolstadt Werte
+INGOLSTADT_CO2 = 1_500_000  # t/Jahr (realistischer Wert)
+INGOLSTADT_EINWOHNER = 140_000
 
-# -----------------------------
-# Streamlit UI
-# -----------------------------
-st.set_page_config(page_title="Tommy Hilfiger Jet Tracker", layout="wide")
+ingolstadt_percent = (total_emission / INGOLSTADT_CO2) * 100
+ingolstadt_per_capita = INGOLSTADT_CO2 / INGOLSTADT_EINWOHNER
+hilfiger_factor = total_emission / ingolstadt_per_capita
 
-st.title("🛩️ Privatjet-Tracker – Tommy Hilfiger")
+st.subheader("📊 Statistiken & Vergleich mit Ingolstadt")
 
-st.write("""
-Diese App visualisiert die Flüge von **Tommy Hilfiger** auf Basis einer CSV-Datei,
-berechnet Distanz und CO₂-Emissionen und vergleicht sie mit den jährlichen Emissionen
-der Stadt **Pfaffenhofen a.d.Ilm**. Mehrfach geflogene Strecken werden auf der Karte
-**dicker** dargestellt.
-""")
-
-col1, col2, col3 = st.columns(3)
-col1.metric("Anzahl Flüge", len(df))
-col2.metric("Gesamtdistanz (km)", f"{total_distance:,.0f}")
-col3.metric("CO₂-Ausstoß (t)", f"{total_emission:.2f}")
+c1, c2, c3, c4 = st.columns(4)
+c1.metric("Flüge insgesamt", len(df))
+c2.metric("Gesamtdistanz (km)", f"{total_distance:,.0f}")
+c3.metric("CO₂-Ausstoß (t)", f"{total_emission:.2f}")
+c4.metric("Anteil vs. Ingolstadt", f"{ingolstadt_percent:.4f}%")
 
 st.caption(
-    f"Das entspricht etwa **{pfaffenhofen_percent:.2f}%** der jährlichen "
-    "CO₂-Emissionen von Pfaffenhofen a.d.Ilm (≈ 5.000 t/Jahr)."
+    f"Ein Einwohner von Ingolstadt verursacht ca. **{ingolstadt_per_capita:.1f} t CO₂/Jahr**. "
+    f"Tommy Hilfiger verursacht durch Privatflüge allein **{hilfiger_factor:.2f}×** so viel."
 )
 
-# -----------------------------
-# Datum-Filter
-# -----------------------------
+
+# ----------------------------------------------------
+# DATUMSLIMITER
+# ----------------------------------------------------
 min_date, max_date = df["date"].min(), df["date"].max()
-
-selected_date = st.slider(
-    "Flüge bis zu folgendem Datum anzeigen:",
-    min_value=min_date.date(),
-    max_value=max_date.date(),
-    value=max_date.date()
-)
+selected_date = st.slider("Flüge bis zum Datum anzeigen:",
+                          min_date.date(), max_date.date(), max_date.date())
 
 filtered = df[df["date"].dt.date <= selected_date]
 
-# -----------------------------
-# Weltkarte mit dicken Linien
-# -----------------------------
-st.subheader("🌍 Flugroutenkarte (doppelte Strecken dicker)")
+
+# ----------------------------------------------------
+# KARTE
+# ----------------------------------------------------
+st.subheader("🌍 Flugrouten – farbcodiert nach Häufigkeit")
 
 fig = px.scatter_geo()
 
+# Fluglinien zeichnen
 for _, row in filtered.iterrows():
-    fig.add_trace(
-        px.line_geo(
-            lat=[row["lat_from"], row["lat_to"]],
-            lon=[row["lon_from"], row["lon_to"]],
-        ).data[0].update(
-            line=dict(width=row["line_width"], color="red"),
-            hovertext=f"{row['from']} → {row['to']} ({row['distance_km']:.0f} km, {row['count']}x geflogen)"
-        )
-    )
+    fig.add_trace(px.line_geo(
+        lat=[row["lat_from"], row["lat_to"]],
+        lon=[row["lon_from"], row["lon_to"]],
+    ).data[0].update(
+        line=dict(width=row["line_width"], color=row["color"])
+    ))
 
-fig.update_layout(
-    height=650,
-    showlegend=False,
-    margin=dict(l=0, r=0, t=30, b=0),
-    title="Flugrouten von Tommy Hilfiger"
+# ZOOM berechnen
+min_lat = filtered[["lat_from", "lat_to"]].min().min()
+max_lat = filtered[["lat_from", "lat_to"]].max().min()
+min_lon = filtered[["lon_from", "lon_to"]].min().min()
+max_lon = filtered[["lon_from", "lon_to"]].max().max()
+
+fig.update_geos(
+    lataxis_range=[min_lat - 2, max_lat + 2],
+    lonaxis_range=[min_lon - 2, max_lon + 2],
+    showcountries=True,
+    showcoastlines=True
+)
+
+# ----------------------------------------------------
+# SCHÖNE LEGENDE IM WEISSEN KASTEN AUF DER KARTE
+# ----------------------------------------------------
+legend_html = (
+    "<b>Flughäufigkeit</b><br>"
+    "<span style='color:red;'>⬤</span> 1 Flug<br>"
+    "<span style='color:blue;'>⬤</span> 2 Flüge<br>"
+    "<span style='color:purple;'>⬤</span> 3 Flüge<br>"
+    "<span style='color:yellow;'>⬤</span> 4 Flüge<br>"
+    "<span style='color:green;'>⬤</span> 5+ Flüge<br>"
+)
+
+fig.update_layout(height=500, margin=dict(l=0, r=0, t=0, b=0))
+
+fig.add_annotation(
+    x=0.98, y=0.02,
+    xanchor="right", yanchor="bottom",
+    text=legend_html,
+    showarrow=False,
+    align="left",
+    bgcolor="white",
+    bordercolor="black",
+    borderwidth=1,
+    opacity=0.85
 )
 
 st.plotly_chart(fig, use_container_width=True)
 
-# -----------------------------
-# Tabelle
-# -----------------------------
-st.subheader("📋 Flugdaten (gefiltert)")
-st.dataframe(filtered[[
-    "date", "from", "to", "distance_miles", "distance_km", "count"
-]])
 
-st.info("Dicke Linien = Strecken, die mehrfach geflogen wurden.")
+# ----------------------------------------------------
+# DATENTABELLE
+# ----------------------------------------------------
+st.subheader("📋 Gefilterte Flugdaten")
+st.dataframe(filtered[["date", "from", "to", "distance_miles", "distance_km", "count"]])

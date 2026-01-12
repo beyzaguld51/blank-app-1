@@ -37,14 +37,14 @@ def clean_csv(input_file="tommy_hilfiger_flights.csv", output_file="cleaned_flig
 
             line = fix_typos(line)
 
-            # Formatierungen glätten
+           
             line = re.sub(r"\((\w{3})\)", r" (\1)", line)
             line = re.sub(r",\s*\(", " (", line)
             line = re.sub(r"\s{2,}", " ", line)
 
             parts = [p.strip() for p in line.split(",")]
 
-            # Wenn zu viele Kommas: mittlere Teile zusammenziehen
+
             if len(parts) > 5:
                 parts = [parts[0], parts[1], parts[2], " ".join(parts[3:-1]), parts[-1]]
 
@@ -61,7 +61,7 @@ clean_file = clean_csv()
 df = pd.read_csv(clean_file)
 df.columns = [c.strip().lower() for c in df.columns]
 
-# Datum + numeric sauber machen
+# Datum 
 df["date"] = pd.to_datetime(df["date"], errors="coerce")
 df["distance_miles"] = pd.to_numeric(df["distance_miles"], errors="coerce")
 df = df.dropna(subset=["date", "from", "to", "distance_miles"]).copy()
@@ -108,7 +108,7 @@ df = df.dropna(subset=["lat_from", "lon_from", "lat_to", "lon_to"]).copy()
 # DISTANZEN + CO2
 # ----------------------------------------------------
 df["distance_km"] = df["distance_miles"] * 1.60934
-df["co2_t"] = df["distance_km"] * 2.5 / 1000  # simple Annahme
+df["co2_t"] = df["distance_km"] * 2.5 / 1000  
 
 # ----------------------------------------------------
 # DUPLIKATE ZÄHLEN (Route)
@@ -117,7 +117,7 @@ route_counts = df.groupby(["iata_from", "iata_to"]).size().reset_index(name="cou
 df = df.merge(route_counts, on=["iata_from", "iata_to"], how="left")
 
 # ----------------------------------------------------
-# NEUES FARBSYSTEM
+# FARBSYSTEM
 # ----------------------------------------------------
 def get_color(count):
     if count >= 5:
@@ -140,7 +140,7 @@ df["line_width"] = 3
 total_distance = df["distance_km"].sum()
 total_emission = df["co2_t"].sum()
 
-INGOLSTADT_CO2 = 1_500_000  # t/Jahr (Annahme)
+INGOLSTADT_CO2 = 1_500_000  
 INGOLSTADT_EINWOHNER = 140_000
 
 ingolstadt_percent = (total_emission / INGOLSTADT_CO2) * 100 if INGOLSTADT_CO2 else 0
@@ -174,17 +174,17 @@ selected_date = st.slider(
 filtered = df[df["date"].dt.date <= selected_date].copy()
 
 # ----------------------------------------------------
-# EXTRA STATISTIK (GEFILTERT)  ✅ HINZUGEFÜGT
+# STATISTIK 
 # ----------------------------------------------------
-st.subheader("📌 Zusätzliche Statistiken (gefiltert)")
+st.subheader("📌 Statistiken")
 
 f_total_distance = filtered["distance_km"].sum()
 f_total_emission = filtered["co2_t"].sum()
 
 k1, k2, k3 = st.columns(3)
-k1.metric("Flüge (gefiltert)", f"{len(filtered):,}")
-k2.metric("Distanz (km, gefiltert)", f"{f_total_distance:,.0f}")
-k3.metric("CO₂ (t, gefiltert)", f"{f_total_emission:.2f}")
+k1.metric("Flüge", f"{len(filtered):,}")
+k2.metric("Distanz (km)", f"{f_total_distance:,.0f}")
+k3.metric("CO₂ (t)", f"{f_total_emission:.2f}")
 
 if len(filtered) > 0:
     median_distance = filtered["distance_km"].median()
@@ -212,7 +212,7 @@ if len(filtered) > 0:
         .reset_index()
     )
 
-    st.subheader("📈 Trends & Verteilungen (gefiltert)")
+    st.subheader("📈 Trends & Verteilungen")
 
     t1, t2 = st.columns(2)
     fig_flights = px.bar(monthly, x="month", y="flights", title="Flüge pro Monat")
@@ -229,7 +229,7 @@ if len(filtered) > 0:
     v2.plotly_chart(fig_box, use_container_width=True)
 
     # Rankings
-    st.subheader("🏁 Rankings (gefiltert)")
+    st.subheader("🏁 Rankings")
 
     top_routes = (
         filtered.groupby(["from", "to"])
@@ -264,8 +264,7 @@ if len(filtered) > 0:
         .sort_values("flights", ascending=False)
         .head(10)
     )
-    st.markdown("**Bonus: Kurz aber oft (< 500 km) – Top 10**")
-    st.dataframe(short_often, use_container_width=True)
+
 else:
     st.info("Keine Daten im gewählten Zeitraum für die Zusatz-Statistiken.")
 
@@ -299,7 +298,7 @@ fig.update_geos(
 )
 
 # ----------------------------------------------------
-# LEGENDE (Kasten)
+# LEGENDE 
 # ----------------------------------------------------
 legend_html = (
     "<b>Flughäufigkeit</b><br>"
@@ -325,9 +324,3 @@ fig.add_annotation(
 )
 
 st.plotly_chart(fig, use_container_width=True)
-
-# ----------------------------------------------------
-# DATENTABELLE
-# ----------------------------------------------------
-st.subheader("📋 Gefilterte Flugdaten")
-st.dataframe(filtered[["date", "from", "to", "distance_miles", "distance_km", "count", "co2_t"]])
